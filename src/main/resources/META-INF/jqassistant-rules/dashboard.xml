@@ -1,6 +1,117 @@
 <jqa:jqassistant-rules xmlns:jqa="http://www.buschmais.com/jqassistant/core/rule/schema/v1.4">
 
     <group id="dashboard:Default">
+        <includeConcept refId="dashboard:Authors" />
+        <includeConcept refId="dashboard:Merge" />
+        <includeConcept refId="dashboard:Timetree" />
+        <includeConcept refId="dashboard:TypeHasSourceGitFile" />
+        <includeConcept refId="dashboard:Filetype" />
     </group>
+
+    <concept id="dashboard:Authors">
+        <description>Removes duplicate authors</description>
+        <cypher><![CDATA[
+            MATCH
+              (a:Author)
+            WITH
+              a.name as name, collect(a) as authors
+            WITH
+              head(authors) as author, tail(authors) as duplicates
+            UNWIND
+              duplicates as duplicate
+            MATCH
+              (duplicate)-[:COMMITTED]->(c:Commit)
+            MERGE
+              (author)-[:COMMITTED]->(c)
+            DETACH DELETE
+              duplicate
+            RETURN
+              author.name, count(duplicate)
+        ]]></cypher>
+    </concept>
+
+    <concept id="dashboard:Merge">
+        <description>Labels merge commits</description>
+        <cypher><![CDATA[
+            MATCH
+              (c:Commit)-[:HAS_PARENT]->(p:Commit)
+            WITH
+              c, count(p) as parents
+            WHERE
+              parents > 1
+            SET
+              c:Merge
+            RETURN
+              count(c)
+        ]]></cypher>
+    </concept>
+
+    <concept id="dashboard:Timetree">
+        <description>Creates a time tree for commits</description>
+        <cypher><![CDATA[
+            MATCH
+              (c:Commit)
+            WITH
+              c, split(c.date, "-") as parts
+            MERGE
+              (y:Year{year:parts[0]})
+            MERGE
+              (m:Month{month:parts[1]})-[:OF_YEAR]->(y)
+            MERGE
+              (d:Day{day:parts[2]})-[:OF_MONTH]->(m)
+            MERGE
+              (c)-[:OF_DAY]->(d)
+            RETURN
+              y, m, d
+        ]]></cypher>
+    </concept>
+
+    <concept id="dashboard:GitFileName">
+        <description>Copies the relativePath property of `:Git:File` nodes to the indexed property `fileName` for faster lookup</description>
+        <cypher><![CDATA[
+            MATCH
+              (f:Git:File)
+            SET
+              f.fileName = f.relativePath
+            RETURN
+              count(f)
+        ]]></cypher>
+        <verify>
+            <aggregation />
+        </verify>
+    </concept>
+
+    <concept id="dashboard:TypeHasSourceGitFile">
+        <requiresConcept refId="dashboard:GitFileName" />
+        <description>Creates relates HAS_SOURCE between types and git files</description>
+        <cypher><![CDATA[
+            MATCH
+              (p:Package)-[:CONTAINS]->(t:Type)
+            WITH
+              t, p.fileName + "/" + t.sourceFileName as sourceFileName // e.g. "/org/dukecon/model/Location.java"
+            MATCH
+              (f:Git:File)
+            WHERE
+              f.fileName ends with sourceFileName
+            MERGE
+              (t)-[:HAS_SOURCE]->(f)
+            RETURN
+              f.fileName, collect(t.fqn)
+        ]]></cypher>
+    </concept>
+
+    <concept id="dashboard:Filetype">
+        <description>Sets file types</description>
+        <cypher><![CDATA[
+            MATCH
+              (f:Git:File)
+            WITH
+              f, split(f.relativePath, ".") as splittedFileName
+            SET
+              f.type = splittedFileName[size(splittedFileName)-1]
+            RETURN
+              f.type as filetype, count(f) as files
+        ]]></cypher>
+    </concept>
 
 </jqa:jqassistant-rules>
