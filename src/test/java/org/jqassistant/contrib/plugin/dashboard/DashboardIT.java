@@ -3,17 +3,16 @@ package org.jqassistant.contrib.plugin.dashboard;
 import com.buschmais.jqassistant.core.analysis.api.Result;
 import com.buschmais.jqassistant.core.analysis.api.rule.Concept;
 import com.buschmais.jqassistant.core.analysis.api.rule.RuleException;
-import com.buschmais.jqassistant.plugin.common.api.model.FileDescriptor;
 import com.buschmais.jqassistant.plugin.java.api.model.ClassFileDescriptor;
 import com.buschmais.jqassistant.plugin.java.api.model.PackageDescriptor;
-import com.buschmais.jqassistant.plugin.java.api.model.TypeDescriptor;
 import com.buschmais.jqassistant.plugin.java.test.AbstractJavaPluginIT;
-import de.kontext_e.jqassistant.plugin.git.store.descriptor.*;
+import de.kontext_e.jqassistant.plugin.git.store.descriptor.GitAuthorDescriptor;
+import de.kontext_e.jqassistant.plugin.git.store.descriptor.GitCommitDescriptor;
+import de.kontext_e.jqassistant.plugin.git.store.descriptor.GitFileDescriptor;
 import org.junit.Test;
 
 import java.util.Map;
 
-import static com.buschmais.jqassistant.core.analysis.api.Result.Status.FAILURE;
 import static com.buschmais.jqassistant.core.analysis.api.Result.Status.SUCCESS;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.notNullValue;
@@ -61,7 +60,7 @@ public class DashboardIT extends AbstractJavaPluginIT {
         assertThat(result.getStatus(), equalTo(SUCCESS));
         assertThat(result.getRows().size(), equalTo(1));
         assertThat(result.getRows().get(0).containsKey("count(c)"), equalTo(true));
-        assertThat((Long)result.getRows().get(0).get("count(c)"), equalTo(0L));
+        assertThat((Long) result.getRows().get(0).get("count(c)"), equalTo(0L));
     }
 
     /**
@@ -99,7 +98,7 @@ public class DashboardIT extends AbstractJavaPluginIT {
         Result<Concept> result = applyConcept("dashboard:GitFileName");
         assertThat(result.getStatus(), equalTo(SUCCESS));
         assertThat(result.getRows().size(), equalTo(1));
-        assertThat((Long)result.getRows().get(0).get("count(f)"), equalTo(2L));
+        assertThat((Long) result.getRows().get(0).get("count(f)"), equalTo(2L));
 
         store.reset();
     }
@@ -140,7 +139,7 @@ public class DashboardIT extends AbstractJavaPluginIT {
         Result<Concept> result = applyConcept("dashboard:Filetype");
         assertThat(result.getStatus(), equalTo(SUCCESS));
         assertThat(result.getRows().size(), equalTo(1));
-        assertThat((String)result.getRows().get(0).get("filetype"), equalTo("txt"));
+        assertThat((String) result.getRows().get(0).get("filetype"), equalTo("txt"));
 
         store.reset();
     }
