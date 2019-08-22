@@ -28,6 +28,10 @@ Currently the dashboard provides:
 - jQAssistant 1.7.0 or higher (see below)
 
 == Setup
+You can use the plugin with Maven or with the Command Line Distribution of jQAssistant.
+
+=== Maven
+
 The plugin can be enabled in a Maven based project by adding it as a dependency to the jQAssistant Maven plugin:
 ----
 <build>
@@ -71,6 +75,9 @@ The plugin can be enabled in a Maven based project by adding it as a dependency 
     </plugins>
 </build>
 ----
+=== Command Line Distribution
+
+To enable the plugin with the Command Line Distribution, download the JAR file from Maven Central and put it in the /plugins folder from the distribution.
 
 [[HowTo]]
 == How To Use It
