@@ -1,2 +1,97 @@
 :toc:
 = jQAssistant Dashboard Plugin
+
+The project provides a http://jqassistant.org/[jQAssistant] plugin for providing a https://github.com/softvis-research/jqa-dashboard/[dashboard],
+which shows interactive graphics about different metrics of your system.
+This allows you to have a quick overview about dependencies inside your project, statistics about your contributors, potential problems in your architecture and more.
+
+== How It Works
+
+The plugin provides a set of concepts, which are applied by jQAssistant, to enable the dashboard to function.
+The dashboard itself will then be served as a React App under a certain URL (see <<HowTo, How To Use It>>)
+
+Currently the dashboard provides:
+
+- An overview page, which shows different metrics as numbers
+- A structure diagram, which enables you to interactively explore your code base
+- The distribution of file types, represented by a pie chart
+- A dependency diagram, which shows you internal dependencies of your project
+- An activity dashboard, that presents different statistics about the frequency and authors of the commits
+- A knowledge distribution, showing what contributor uses what programming languages
+- A hotspot diagram, that indicates potential risks in your code
+- https://pmd.github.io/[Static code analysis]
+- A test coverage diagram
+
+== Prerequisites
+
+- Java 7 or higher
+- jQAssistant 1.7.0 or higher (see below)
+
+== Setup
+The plugin can be enabled in a Maven based project by adding it as a dependency to the jQAssistant Maven plugin:
+----
+<build>
+    <plugins>
+        <plugin>
+            <groupId>com.buschmais.jqassistant</groupId>
+            <artifactId>jqassistant-maven-plugin</artifactId>
+            <version>1.7.0-SNAPSHOT</version>
+            <executions>
+                <execution>
+                    <id>default-cli</id>
+                    <goals>
+                        <goal>scan</goal>
+                        <goal>analyze</goal>
+                    </goals>
+                    <configuration>
+                        <failOnSeverity>CRITICAL</failOnSeverity>
+                        <warnOnSeverity>MINOR</warnOnSeverity>
+                        <groups>
+                            <group>default</group>
+                        </groups>
+                        <rule-parameters>
+                            <rootPackage>dashboard</rootPackage>
+                        </rule-parameters>
+                        <scanIncludes>
+                            <scanInclude>
+                                <path>${project.basedir}/.git</path>
+                            </scanInclude>
+                        </scanIncludes>
+                    </configuration>
+                </execution>
+            </executions>
+            <dependencies>
+                <dependency>
+                    <groupId>org.jqassistant.contrib.plugin</groupId>
+                    <artifactId>jqassistant-dashboard-plugin</artifactId>
+                    <version>${jqassistant.dashboard.version}</version>
+                </dependency>
+            </dependencies>
+        </plugin>
+    </plugins>
+</build>
+----
+
+[[HowTo]]
+== How To Use It
+
+After building the project (e.g. with +mvn clean install+), you need to start the jQAssistant server with
+----
+mvn jqassistant:server
+----
+
+If the server started successfully, you can reach the dashboard under
+
+http://localhost:7474/jqassistant/dashboard
+
+Note, that the regular Neo4j Browser is still available (http://localhost:7474/browser/).
+
+== Acknowledgements
+
+The plugin could not provide its functionality without the support of the following open source projects:
+
+* https://github.com/softvis-research/jqa-dashboard/[jQA-Dashboard]
+* https://jqassistant.org[jQAssistant]
+* https://neo4j.org[Neo4j]
+* https://maven.apache.org[Apache Maven]
+
