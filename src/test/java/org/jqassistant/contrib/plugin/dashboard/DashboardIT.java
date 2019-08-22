@@ -4,6 +4,7 @@ import com.buschmais.jqassistant.core.analysis.api.Result;
 import com.buschmais.jqassistant.core.analysis.api.rule.Concept;
 import com.buschmais.jqassistant.core.analysis.api.rule.RuleException;
 import com.buschmais.jqassistant.plugin.common.api.model.FileDescriptor;
+import com.buschmais.jqassistant.plugin.java.api.model.ClassFileDescriptor;
 import com.buschmais.jqassistant.plugin.java.api.model.PackageDescriptor;
 import com.buschmais.jqassistant.plugin.java.api.model.TypeDescriptor;
 import com.buschmais.jqassistant.plugin.java.test.AbstractJavaPluginIT;
@@ -108,22 +109,22 @@ public class DashboardIT extends AbstractJavaPluginIT {
      */
     @Test
     public void validTypeHasSourceGitFile() throws RuleException {
-//        store.beginTransaction();
-//        FileDescriptor file = store.create(FileDescriptor.class);
-//        file.setFileName("Test.java");
-//        PackageDescriptor pack = store.create(PackageDescriptor.class);
-//        pack.setFileName("/package");
-//        pack.getContains().add(file);
-//        GitFileDescriptor gitFile = store.create(GitFileDescriptor.class);
-//        gitFile.setRelativePath("./package/Test.java");
-//        store.commitTransaction();
-
+        store.beginTransaction();
+        ClassFileDescriptor file = store.create(ClassFileDescriptor.class);
+        file.setSourceFileName("Test.java");
+        PackageDescriptor pack = store.create(PackageDescriptor.class);
+        pack.setFileName("/package");
+        pack.getContains().add(file);
+        GitFileDescriptor gitFile = store.create(GitFileDescriptor.class);
+        gitFile.setRelativePath("./package/Test.java");
+        store.commitTransaction();
 
         Result<Concept> result = applyConcept("dashboard:TypeHasSourceGitFile");
-        assertThat(result.getStatus(), equalTo(FAILURE));
-//        assertThat(result.getStatus(), equalTo(SUCCESS));
+        assertThat(result.getStatus(), equalTo(SUCCESS));
+        assertThat(result.getRows().size(), equalTo(1));
+        assertThat(result.getRows().get(0), notNullValue());
 
-//        store.reset();
+        store.reset();
     }
 
     /**

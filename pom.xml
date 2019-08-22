@@ -142,6 +142,12 @@
             <artifactId>java</artifactId>
             <type>test-jar</type>
         </dependency>
+        <dependency>
+            <groupId>com.buschmais.jqassistant.plugin</groupId>
+            <artifactId>java</artifactId>
+            <version>1.6.0</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
 </project>
