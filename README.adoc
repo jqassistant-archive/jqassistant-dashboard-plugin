@@ -24,10 +24,11 @@ Currently the dashboard provides:
 
 == Prerequisites
 
-- Java 7 or higher
+- Java 8 or higher
 - jQAssistant 1.7.0 or higher (see below)
 
-== Setup
+[[HowTo]]
+== How To Use It
 You can use the plugin with Maven or with the Command Line Distribution of jQAssistant.
 
 === Maven
@@ -48,14 +49,12 @@ The plugin can be enabled in a Maven based project by adding it as a dependency 
                         <goal>analyze</goal>
                     </goals>
                     <configuration>
-                        <failOnSeverity>CRITICAL</failOnSeverity>
-                        <warnOnSeverity>MINOR</warnOnSeverity>
+                        <!-- Add jqassistant-dashboard:Default as a jQA group-->
                         <groups>
+                            <group>jqassistant-dashboard:Default</group>
                             <group>default</group>
                         </groups>
-                        <rule-parameters>
-                            <rootPackage>dashboard</rootPackage>
-                        </rule-parameters>
+                        <!-- Include .git folder path as a scan location -->
                         <scanIncludes>
                             <scanInclude>
                                 <path>${project.basedir}/.git</path>
@@ -64,6 +63,7 @@ The plugin can be enabled in a Maven based project by adding it as a dependency 
                     </configuration>
                 </execution>
             </executions>
+            <!-- Add the jqassistant-dashboard-plugin itself as a dependency-->
             <dependencies>
                 <dependency>
                     <groupId>org.jqassistant.contrib.plugin</groupId>
@@ -75,14 +75,8 @@ The plugin can be enabled in a Maven based project by adding it as a dependency 
     </plugins>
 </build>
 ----
-=== Command Line Distribution
 
-To enable the plugin with the Command Line Distribution, download the JAR file from Maven Central and put it in the /plugins folder from the distribution.
-
-[[HowTo]]
-== How To Use It
-
-After building the project (e.g. with +mvn clean install+), you need to start the jQAssistant server with
+After building the project (e.g. with mvn clean install), you need to start the jQAssistant server with
 ----
 mvn jqassistant:server
 ----
@@ -93,6 +87,31 @@ http://localhost:7474/jqassistant/dashboard
 
 Note, that the regular Neo4j Browser is still available (http://localhost:7474/browser/).
 
+=== Command Line Distribution
+
+To enable the plugin with the Command Line Distribution, download the JAR file from Maven Central and put it in the /plugins folder from the distribution.
+
+In addition to that, you need to install the https://github.com/kontext-e/jqassistant-plugins[jQA Git Plugin].
+
+To start the jQA server run the following commands: (xxx.jar ist your built project jar file)
+
+Linux:
+----
+sh bin/jqassistant.sh scan -f .../xxx.jar
+sh bin/jqassistant.sh scan -f .../.git/
+sh bin/jqassistant.sh analyze -groups jqassistant-dashboard:Default
+sh bin/jqassistant.sh server
+----
+
+Windows:
+----
+bin\jqassistant.cmd scan -f ...\xxx.jar
+bin\jqassistant.cmd scan -f ...\.git\
+bin\jqassistant.cmd analyze -groups jqassistant-dashboard:Default
+bin\jqassistant.cmd server
+----
+
+
 == Acknowledgements
 
 The plugin could not provide its functionality without the support of the following open source projects:
@@ -100,5 +119,5 @@ The plugin could not provide its functionality without the support of the follow
 * https://github.com/softvis-research/jqa-dashboard/[jQA-Dashboard]
 * https://jqassistant.org[jQAssistant]
 * https://neo4j.org[Neo4j]
-* https://maven.apache.org[Apache Maven]
+
 
