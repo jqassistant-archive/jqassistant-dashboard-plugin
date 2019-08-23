@@ -52,7 +52,7 @@ The plugin can be enabled in a Maven based project by adding it as a dependency 
                         <!-- Add jqassistant-dashboard:Default as a jQA group-->
                         <groups>
                             <group>jqassistant-dashboard:Default</group>
-                            <group>default</group>
+                            <!-- Insert your own group references here -->
                         </groups>
                         <!-- Include .git folder path as a scan location -->
                         <scanIncludes>
