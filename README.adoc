@@ -93,7 +93,7 @@ To enable the plugin with the Command Line Distribution, download the JAR file f
 
 In addition to that, you need to install the https://github.com/kontext-e/jqassistant-plugins[jQA Git Plugin].
 
-To start the jQA server run the following commands: (xxx.jar ist your built project jar file)
+To start the jQA server run the following commands: (xxx.jar is your project build)
 
 Linux:
 ----
