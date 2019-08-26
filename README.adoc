@@ -52,7 +52,7 @@ The plugin can be enabled in a Maven based project by adding it as a dependency 
                         <!-- Add jqassistant-dashboard:Default as a jQA group-->
                         <groups>
                             <group>jqassistant-dashboard:Default</group>
-                            <group>default</group>
+                            <!-- Insert your own group references here -->
                         </groups>
                         <!-- Include .git folder path as a scan location -->
                         <scanIncludes>
@@ -93,7 +93,7 @@ To enable the plugin with the Command Line Distribution, download the JAR file f
 
 In addition to that, you need to install the https://github.com/kontext-e/jqassistant-plugins[jQA Git Plugin].
 
-To start the jQA server run the following commands: (xxx.jar ist your built project jar file)
+To start the jQA server run the following commands: (xxx.jar is your project build)
 
 Linux:
 ----
