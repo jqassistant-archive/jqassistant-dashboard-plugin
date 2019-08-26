@@ -3,8 +3,10 @@ package org.jqassistant.contrib.plugin.dashboard;
 import com.buschmais.jqassistant.core.analysis.api.Result;
 import com.buschmais.jqassistant.core.analysis.api.rule.Concept;
 import com.buschmais.jqassistant.core.analysis.api.rule.RuleException;
-import com.buschmais.jqassistant.plugin.java.api.model.ClassFileDescriptor;
-import com.buschmais.jqassistant.plugin.java.api.model.PackageDescriptor;
+import com.buschmais.jqassistant.plugin.common.api.model.ArtifactDescriptor;
+import com.buschmais.jqassistant.plugin.common.api.model.ArtifactFileDescriptor;
+import com.buschmais.jqassistant.plugin.common.api.model.DirectoryDescriptor;
+import com.buschmais.jqassistant.plugin.java.api.model.*;
 import com.buschmais.jqassistant.plugin.java.test.AbstractJavaPluginIT;
 import de.kontext_e.jqassistant.plugin.git.store.descriptor.GitAuthorDescriptor;
 import de.kontext_e.jqassistant.plugin.git.store.descriptor.GitCommitDescriptor;
@@ -220,6 +222,32 @@ public class DashboardIT extends AbstractJavaPluginIT {
     }
 
     /**
+     * Verifies that the concept "jqassistant-dashboard:ProjectFile" is successful, if it is applicable.
+     */
+    @Test
+    public void validProjectFile() throws RuleException {
+        store.beginTransaction();
+        ClassTypeDescriptor classDescriptor = store.create(ClassTypeDescriptor.class);
+        store.create(TypeDescriptor.class);
+        ArtifactFileDescriptor artifactDescriptor = store.create(ArtifactFileDescriptor.class);
+        artifactDescriptor.getContains().add(classDescriptor);
+        store.commitTransaction();
+
+        Result<Concept> result = applyConcept("jqassistant-dashboard:ProjectFile");
+        assertThat(result.getStatus(), equalTo(SUCCESS));
+        assertThat(result.getRows().size(), equalTo(1));
+        assertThat((Long) result.getRows().get(0).get("NumberOfProjectFiles"), equalTo(1L));
+
+        store.beginTransaction();
+        TestResult testResult = query("MATCH (t:ProjectFile) RETURN count(t) as ProjectFileCount");
+        store.commitTransaction();
+
+        List<Map<String, Object>> rows = testResult.getRows();
+        assertThat(rows.size(), equalTo(1));
+        assertThat((Long) rows.get(0).get("ProjectFileCount"), equalTo(1L));
+    }
+
+    /**
      * Verifies the group "jqassistant-dashboard:Default".
      */
     @Test
@@ -234,5 +262,6 @@ public class DashboardIT extends AbstractJavaPluginIT {
         assertThat(result.get("jqassistant-dashboard:GitFileName"), notNullValue());
         assertThat(result.get("jqassistant-dashboard:TypeHasSourceGitFile"), notNullValue());
         assertThat(result.get("jqassistant-dashboard:FileType"), notNullValue());
+        assertThat(result.get("jqassistant-dashboard:ProjectFile"), notNullValue());
     }
 }

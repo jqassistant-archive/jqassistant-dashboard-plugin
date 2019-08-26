@@ -149,4 +149,19 @@
         ]]></cypher>
     </concept>
 
+    <concept id="jqassistant-dashboard:ProjectFile">
+        <description>Every `:Type` which is contained in an artifact is labeled as `:ProjectFile`</description>
+        <cypher><![CDATA[
+            MATCH
+              (:Artifact)-[:CONTAINS]->(t:Type)
+            SET
+              t:ProjectFile
+            RETURN
+              count(t) as NumberOfProjectFiles
+        ]]></cypher>
+        <verify>
+            <aggregation />
+        </verify>
+    </concept>
+
 </jqa:jqassistant-rules>
