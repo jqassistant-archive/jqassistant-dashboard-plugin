@@ -59,7 +59,20 @@ The plugin can be enabled in a Maven based project by adding it as a dependency 
                             <scanInclude>
                                 <path>${project.basedir}/.git</path>
                             </scanInclude>
+                            <!-- OPTIONAL (1)-->
+                            <scanInclude>
+                                <path>## Path where yout pmd.xml is generated##/pmd.xml</path>
+                            </scanInclude>
+                            <!-- OPTIONAL (2) -->
+                            <scanInclude>
+                                <path>## Path where your jacoco.xml is generated ##</path>
+                            </scanInclude>
                         </scanIncludes>
+                        <!-- OPTIONAL (2) -->
+                        <scanProperties>
+                            <jqassistant.plugin.jacoco.filename>jacoco.xml</jqassistant.plugin.jacoco.filename>
+                            <jqassistant.plugin.jacoco.dirname>## Path where your jacoco.xml is generated ##</jqassistant.plugin.jacoco.dirname>
+                        </scanProperties>
                     </configuration>
                 </execution>
             </executions>
@@ -72,9 +85,59 @@ The plugin can be enabled in a Maven based project by adding it as a dependency 
                 </dependency>
             </dependencies>
         </plugin>
+        <!-- OPTIONAL (1) (this is an example, your configuration may vary) -->
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-pmd-plugin</artifactId>
+            <version>3.10.0</version>
+            <executions>
+                <execution>
+                    <goals>
+                        <goal>pmd</goal>
+                    </goals>
+                    <phase>package</phase>
+                </execution>
+            </executions>
+        </plugin>
+        <!-- OPTIONAL (2) (this is an example, your configuration may vary) -->
+        <plugin>
+            <groupId>org.jacoco</groupId>
+            <artifactId>jacoco-maven-plugin</artifactId>
+            <version>0.7.9</version>
+            <executions>
+                <execution>
+                    <id>pre-unit-test</id>
+                    <goals>
+                        <goal>prepare-agent</goal>
+                    </goals>
+                    <configuration>
+                        <destFile>${project.build.directory}/coverage-reports/jacoco.exec</destFile>
+                        <propertyName>surefireArgLine</propertyName>
+                    </configuration>
+                </execution>
+                <execution>
+                    <id>post-unit-test</id>
+                    <phase>test</phase>
+                    <goals>
+                        <goal>report</goal>
+                    </goals>
+                    <configuration>
+                        <dataFile>${project.build.directory}/coverage-reports/jacoco.exec</dataFile>
+                        <outputDirectory>${project.reporting.outputDirectory}/jacoco</outputDirectory>
+                    </configuration>
+                </execution>
+            </executions>
+        </plugin>
     </plugins>
 </build>
 ----
+
+It is possible to install the following optional plugins:
+
+1. PMD (example configuration is shown above)
+2. JaCoCo (example configuration is shown above)
+
+Note that in order to be installed properly, you need to insert *every* corresponding Tag (and all its children) after the "OPTIONAL (*)" comments.
 
 After building the project (e.g. with mvn clean install), you need to start the jQAssistant server with
 ----

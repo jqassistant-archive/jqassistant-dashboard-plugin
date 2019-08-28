@@ -128,7 +128,7 @@
     </concept>
 
     <concept id="jqassistant-dashboard:FileType">
-        <description>A property `fileType` is added to each `:Git:File` extracted from extension of the `relativePath`.(e.g. java)</description>
+        <description>A property `type` is added to each `:Git:File` extracted from extension of the `relativePath`.(e.g. java)</description>
         <cypher><![CDATA[
             MATCH
               (f:Git:File)
