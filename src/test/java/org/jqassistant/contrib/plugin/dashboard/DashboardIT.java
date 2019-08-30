@@ -3,23 +3,22 @@ package org.jqassistant.contrib.plugin.dashboard;
 import com.buschmais.jqassistant.core.analysis.api.Result;
 import com.buschmais.jqassistant.core.analysis.api.rule.Concept;
 import com.buschmais.jqassistant.core.analysis.api.rule.RuleException;
-import com.buschmais.jqassistant.plugin.common.api.model.ArtifactDescriptor;
 import com.buschmais.jqassistant.plugin.common.api.model.ArtifactFileDescriptor;
-import com.buschmais.jqassistant.plugin.common.api.model.DirectoryDescriptor;
-import com.buschmais.jqassistant.plugin.java.api.model.*;
+import com.buschmais.jqassistant.plugin.java.api.model.ClassFileDescriptor;
+import com.buschmais.jqassistant.plugin.java.api.model.ClassTypeDescriptor;
+import com.buschmais.jqassistant.plugin.java.api.model.PackageDescriptor;
+import com.buschmais.jqassistant.plugin.java.api.model.TypeDescriptor;
 import com.buschmais.jqassistant.plugin.java.test.AbstractJavaPluginIT;
 import de.kontext_e.jqassistant.plugin.git.store.descriptor.GitAuthorDescriptor;
 import de.kontext_e.jqassistant.plugin.git.store.descriptor.GitCommitDescriptor;
 import de.kontext_e.jqassistant.plugin.git.store.descriptor.GitFileDescriptor;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 import java.util.Map;
 
 import static com.buschmais.jqassistant.core.analysis.api.Result.Status.SUCCESS;
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.junit.Assert.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class DashboardIT extends AbstractJavaPluginIT {
 
@@ -69,18 +68,18 @@ public class DashboardIT extends AbstractJavaPluginIT {
     }
 
     private void testGitDuplicateAuthors(Result<Concept> result) {
-        assertThat(result.getStatus(), equalTo(SUCCESS));
-        assertThat(result.getRows().size(), equalTo(1));
-        assertThat((Long) result.getRows().get(0).get("NumberOfDuplicates"), equalTo(1L));
+        assertEquals(SUCCESS, result.getStatus());
+        assertEquals(1, result.getRows().size());
+        assertEquals(1L, result.getRows().get(0).get("NumberOfDuplicates"));
 
         store.beginTransaction();
         TestResult testResult = query("MATCH (a:Author)-[:COMMITTED]->(c:Commit) RETURN a as Author, count(c) as Commits");
         store.commitTransaction();
 
         List<Map<String, Object>> rows = testResult.getRows();
-        assertThat(rows.size(), equalTo(1));
-        assertThat(rows.get(0).containsKey("Commits"), equalTo(true));
-        assertThat((Long) rows.get(0).get("Commits"), equalTo(2L));
+        assertEquals(1, rows.size());
+        assertTrue(rows.get(0).containsKey("Commits"));
+        assertEquals(2L, rows.get(0).get("Commits"));
     }
 
     /**
@@ -97,19 +96,19 @@ public class DashboardIT extends AbstractJavaPluginIT {
         store.commitTransaction();
 
         Result<Concept> result = applyConcept("jqassistant-dashboard:GitMergeCommit");
-        assertThat(result.getStatus(), equalTo(SUCCESS));
-        assertThat(result.getRows().size(), equalTo(1));
-        assertThat(result.getRows().get(0).containsKey("MergeCommits"), equalTo(true));
-        assertThat((Long) result.getRows().get(0).get("MergeCommits"), equalTo(1L));
+        assertEquals(SUCCESS, result.getStatus());
+        assertEquals(1, result.getRows().size());
+        assertTrue(result.getRows().get(0).containsKey("MergeCommits"));
+        assertEquals(1L, result.getRows().get(0).get("MergeCommits"));
 
         store.beginTransaction();
         TestResult testResult = query("MATCH (c:Commit:Merge) RETURN count(c) as NumberOfMergeCommits");
         store.commitTransaction();
 
         List<Map<String, Object>> rows = testResult.getRows();
-        assertThat(rows.size(), equalTo(1));
-        assertThat(rows.get(0).containsKey("NumberOfMergeCommits"), equalTo(true));
-        assertThat((Long) rows.get(0).get("NumberOfMergeCommits"), equalTo(1L));
+        assertEquals(1, rows.size());
+        assertTrue(rows.get(0).containsKey("NumberOfMergeCommits"));
+        assertEquals(1L, rows.get(0).get("NumberOfMergeCommits"));
     }
 
     /**
@@ -123,18 +122,18 @@ public class DashboardIT extends AbstractJavaPluginIT {
         store.commitTransaction();
 
         Result<Concept> result = applyConcept("jqassistant-dashboard:GitTimeTree");
-        assertThat(result.getStatus(), equalTo(SUCCESS));
-        assertThat(result.getRows().size(), equalTo(1));
+        assertEquals(SUCCESS, result.getStatus());
+        assertEquals(1, result.getRows().size());
 
         store.beginTransaction();
         TestResult testResult = query("MATCH (:Commit)-[:OF_DAY]->(d:Day)-[:OF_MONTH]-(m:Month)-[:OF_YEAR]->(y:Year) RETURN d.day as Day, m.month as Month, y.year as Year");
         store.commitTransaction();
 
         List<Map<String, Object>> rows = testResult.getRows();
-        assertThat(rows.size(), equalTo(1));
-        assertThat((String) rows.get(0).get("Day"), equalTo("22"));
-        assertThat((String) rows.get(0).get("Month"), equalTo("10"));
-        assertThat((String) rows.get(0).get("Year"), equalTo("2077"));
+        assertEquals(1, rows.size());
+        assertEquals("22", rows.get(0).get("Day"));
+        assertEquals("10", rows.get(0).get("Month"));
+        assertEquals("2077", rows.get(0).get("Year"));
     }
 
     /**
@@ -150,17 +149,17 @@ public class DashboardIT extends AbstractJavaPluginIT {
         store.commitTransaction();
 
         Result<Concept> result = applyConcept("jqassistant-dashboard:GitFileName");
-        assertThat(result.getStatus(), equalTo(SUCCESS));
-        assertThat(result.getRows().size(), equalTo(1));
-        assertThat((Long) result.getRows().get(0).get("Files"), equalTo(2L));
+        assertEquals(SUCCESS, result.getStatus());
+        assertEquals(1, result.getRows().size());
+        assertEquals(2L, result.getRows().get(0).get("Files"));
 
         store.beginTransaction();
         TestResult testResult = query("MATCH (f:Git:File) RETURN f.fileName as FileName, f.relativePath as RelPath");
         store.commitTransaction();
 
         List<Map<String, Object>> rows = testResult.getRows();
-        assertThat(rows.size(), equalTo(2));
-        assertThat(rows.get(0).get("FileName"), equalTo(rows.get(0).get("RelPath")));
+        assertEquals(2, rows.size());
+        assertEquals(rows.get(0).get("RelPath"), rows.get(0).get("FileName"));
     }
 
 
@@ -180,17 +179,17 @@ public class DashboardIT extends AbstractJavaPluginIT {
         store.commitTransaction();
 
         Result<Concept> result = applyConcept("jqassistant-dashboard:TypeHasSourceGitFile");
-        assertThat(result.getStatus(), equalTo(SUCCESS));
-        assertThat(result.getRows().size(), equalTo(1));
-        assertThat((Long) result.getRows().get(0).get("Matches"), equalTo(1L));
+        assertEquals(SUCCESS, result.getStatus());
+        assertEquals(1, result.getRows().size());
+        assertEquals(1L, result.getRows().get(0).get("Matches"));
 
         store.beginTransaction();
         TestResult testResult = query("MATCH (t:Java:Type)-[h:HAS_SOURCE]->(f:Git:File) RETURN count(h) as RelationCount");
         store.commitTransaction();
 
         List<Map<String, Object>> rows = testResult.getRows();
-        assertThat(rows.size(), equalTo(1));
-        assertThat((Long) rows.get(0).get("RelationCount"), equalTo(1L));
+        assertEquals(1, rows.size());
+        assertEquals(1L, rows.get(0).get("RelationCount"));
 
     }
 
@@ -207,18 +206,18 @@ public class DashboardIT extends AbstractJavaPluginIT {
         store.commitTransaction();
 
         Result<Concept> result = applyConcept("jqassistant-dashboard:FileType");
-        assertThat(result.getStatus(), equalTo(SUCCESS));
-        assertThat(result.getRows().size(), equalTo(1));
-        assertThat((String) result.getRows().get(0).get("FileType"), equalTo("txt"));
-        assertThat((Long) result.getRows().get(0).get("FilesOfType"), equalTo(1L));
+        assertEquals(SUCCESS, result.getStatus());
+        assertEquals(1, result.getRows().size());
+        assertEquals("txt", result.getRows().get(0).get("FileType"));
+        assertEquals(1L, result.getRows().get(0).get("FilesOfType"));
 
         store.beginTransaction();
         TestResult testResult = query("MATCH (f:Git:File) WHERE EXISTS(f.type) RETURN count(f) as TypedFileCount");
         store.commitTransaction();
 
         List<Map<String, Object>> rows = testResult.getRows();
-        assertThat(rows.size(), equalTo(1));
-        assertThat((Long) rows.get(0).get("TypedFileCount"), equalTo(1L));
+        assertEquals(1, rows.size());
+        assertEquals(1L, rows.get(0).get("TypedFileCount"));
     }
 
     /**
@@ -234,17 +233,17 @@ public class DashboardIT extends AbstractJavaPluginIT {
         store.commitTransaction();
 
         Result<Concept> result = applyConcept("jqassistant-dashboard:ProjectFile");
-        assertThat(result.getStatus(), equalTo(SUCCESS));
-        assertThat(result.getRows().size(), equalTo(1));
-        assertThat((Long) result.getRows().get(0).get("NumberOfProjectFiles"), equalTo(1L));
+        assertEquals(SUCCESS, result.getStatus());
+        assertEquals(1, result.getRows().size());
+        assertEquals(1L, result.getRows().get(0).get("NumberOfProjectFiles"));
 
         store.beginTransaction();
         TestResult testResult = query("MATCH (t:ProjectFile) RETURN count(t) as ProjectFileCount");
         store.commitTransaction();
 
         List<Map<String, Object>> rows = testResult.getRows();
-        assertThat(rows.size(), equalTo(1));
-        assertThat((Long) rows.get(0).get("ProjectFileCount"), equalTo(1L));
+        assertEquals(1, rows.size());
+        assertEquals(1L, rows.get(0).get("ProjectFileCount"));
     }
 
     /**
@@ -254,14 +253,14 @@ public class DashboardIT extends AbstractJavaPluginIT {
     public void defaultGroup() throws RuleException {
         executeGroup("jqassistant-dashboard:Default");
         Map<String, Result<Concept>> result = reportPlugin.getConceptResults();
-        assertThat(result.isEmpty(), equalTo(false));
-        assertThat(result.get("jqassistant-dashboard:GitDuplicateAuthorsByName"), notNullValue());
-        assertThat(result.get("jqassistant-dashboard:GitDuplicateAuthorsByEmail"), notNullValue());
-        assertThat(result.get("jqassistant-dashboard:GitMergeCommit"), notNullValue());
-        assertThat(result.get("jqassistant-dashboard:GitTimeTree"), notNullValue());
-        assertThat(result.get("jqassistant-dashboard:GitFileName"), notNullValue());
-        assertThat(result.get("jqassistant-dashboard:TypeHasSourceGitFile"), notNullValue());
-        assertThat(result.get("jqassistant-dashboard:FileType"), notNullValue());
-        assertThat(result.get("jqassistant-dashboard:ProjectFile"), notNullValue());
+        assertFalse(result.isEmpty());
+        assertNotNull(result.get("jqassistant-dashboard:GitDuplicateAuthorsByName"));
+        assertNotNull(result.get("jqassistant-dashboard:GitDuplicateAuthorsByEmail"));
+        assertNotNull(result.get("jqassistant-dashboard:GitMergeCommit"));
+        assertNotNull(result.get("jqassistant-dashboard:GitTimeTree"));
+        assertNotNull(result.get("jqassistant-dashboard:GitFileName"));
+        assertNotNull(result.get("jqassistant-dashboard:TypeHasSourceGitFile"));
+        assertNotNull(result.get("jqassistant-dashboard:FileType"));
+        assertNotNull(result.get("jqassistant-dashboard:ProjectFile"));
     }
 }
