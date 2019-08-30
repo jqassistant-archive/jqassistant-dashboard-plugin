@@ -34,6 +34,7 @@ You can use the plugin with Maven or with the Command Line Distribution of jQAss
 === Maven
 
 The plugin can be enabled in a Maven based project by adding it as a dependency to the jQAssistant Maven plugin:
+[source, xml]
 ----
 <build>
     <plugins>
@@ -174,6 +175,107 @@ bin\jqassistant.cmd analyze -groups jqassistant-dashboard:Default
 bin\jqassistant.cmd server
 ----
 
+=== How To Add Your Own Concepts
+
+It is possible to change the underlying queries behind the different views.
+The following represents an example of how to accomplish that, by changing the query of the dependency diagram,
+so that only dependencies between top level packages (here called components) are displayed.
+
+==== 1. Create Your Concept
+
+We will do that the regular jQAssistant way, by creating an AsciiDoc File, which contains our concept:
+
+projectRoot/jqassistant/structure.adoc
+[source]
+-----
+[[structure]]
+[role=group,includesConcepts="structure:*"]
+== Structure
+
+=== Concepts
+
+[[structure:RootPackage]]
+[source,cypher,role=concept]
+.The main artifact contains the `Root` package of the libary "org.junit".
+----
+MATCH
+  (artifact:Main:Artifact)-[:CONTAINS]->(root:Package)
+WHERE
+  root.fqn="org.junit"
+SET
+  root:Root
+RETURN
+  root as RootPackage
+----
+
+[[structure:Component]]
+[source,cypher,role=concept,requiresConcepts="structure:RootPackage"]
+.Every package that is a direct child of the root package is a `Component`.
+----
+MATCH
+(root:Root:Package)-[:CONTAINS]->(component:Package)
+SET
+component:Component
+RETURN
+component.name as Component
+ORDER BY
+Component
+----
+-----
+and the index.adoc, which contains our default group:
+
+projectRoot/jqassistant/index.adoc
+[source]
+-----
+:toc: left
+= MyProjectName
+
+This document contains rules which are executed by https://jqassistant.org[jQAssistant]
+
+[[default]]
+[role=group,includesGroups="structure"]
+== Default Rules
+
+The following groups are executed by default:
+
+- <<structure>>
+
+ include::structure.adoc[]
+-----
+
+==== 2. Add "default" Group To pom.xml
+
+You need to insert the following at its designated inside the pom.xml place (see <<HowTo, How To Use It>>)
+
+[source, xml]
+----
+<group>default</group>
+----
+
+==== 3. Build And Run Your Project
+
+e.g.
+
+----
+mvn clean install
+mvn jqassistant:server
+----
+
+==== 4. Modify The Query
+
+For that you need to go to Architecture/Dependencies on the dashboard site.
+After that you can toggle the expert view on the top right corner of the diagram window.
+Replace the query with the following:
+[source]
+----
+MATCH (dependent_package:Component)-[:CONTAINS*]->(dependent:Type:ProjectFile)-[depends:DEPENDS_ON]->(dependency:Type:ProjectFile)<-[:CONTAINS*]-(dependency_package:Component)
+WHERE dependent_package <> dependency_package
+WITH dependent_package.fqn as dependent, dependency_package.fqn as dependency, count(dependency) as dependencies
+RETURN  dependent , dependency, dependencies
+ORDER BY dependent, dependency
+----
+
+To run the query click on the "Send" button. You should see the result immediately.
 
 == Acknowledgements
 
