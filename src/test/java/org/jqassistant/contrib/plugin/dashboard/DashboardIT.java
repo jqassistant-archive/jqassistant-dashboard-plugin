@@ -221,32 +221,6 @@ public class DashboardIT extends AbstractJavaPluginIT {
     }
 
     /**
-     * Verifies that the concept "jqassistant-dashboard:ProjectFile" is successful, if it is applicable.
-     */
-    @Test
-    public void validProjectFile() throws RuleException {
-        store.beginTransaction();
-        ClassTypeDescriptor classDescriptor = store.create(ClassTypeDescriptor.class);
-        store.create(TypeDescriptor.class);
-        ArtifactFileDescriptor artifactDescriptor = store.create(ArtifactFileDescriptor.class);
-        artifactDescriptor.getContains().add(classDescriptor);
-        store.commitTransaction();
-
-        Result<Concept> result = applyConcept("jqassistant-dashboard:ProjectFile");
-        assertEquals(SUCCESS, result.getStatus());
-        assertEquals(1, result.getRows().size());
-        assertEquals(1L, result.getRows().get(0).get("NumberOfProjectFiles"));
-
-        store.beginTransaction();
-        TestResult testResult = query("MATCH (t:ProjectFile) RETURN count(t) as ProjectFileCount");
-        store.commitTransaction();
-
-        List<Map<String, Object>> rows = testResult.getRows();
-        assertEquals(1, rows.size());
-        assertEquals(1L, rows.get(0).get("ProjectFileCount"));
-    }
-
-    /**
      * Verifies the group "jqassistant-dashboard:Default".
      */
     @Test
@@ -261,6 +235,5 @@ public class DashboardIT extends AbstractJavaPluginIT {
         assertNotNull(result.get("jqassistant-dashboard:GitFileName"));
         assertNotNull(result.get("jqassistant-dashboard:TypeHasSourceGitFile"));
         assertNotNull(result.get("jqassistant-dashboard:FileType"));
-        assertNotNull(result.get("jqassistant-dashboard:ProjectFile"));
     }
 }
