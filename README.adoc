@@ -82,7 +82,7 @@ The plugin can be enabled in a Maven based project by adding it as a dependency 
                 <dependency>
                     <groupId>org.jqassistant.contrib.plugin</groupId>
                     <artifactId>jqassistant-dashboard-plugin</artifactId>
-                    <version>1.7.0</version>
+                    <version>1.7.1</version>
                 </dependency>
             </dependencies>
         </plugin>
