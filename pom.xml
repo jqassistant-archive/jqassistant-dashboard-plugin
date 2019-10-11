@@ -9,7 +9,7 @@
 
     <groupId>org.jqassistant.contrib.plugin</groupId>
     <artifactId>jqassistant-dashboard-plugin</artifactId>
-    <version>1.7.0</version>
+    <version>1.7.1-SNAPSHOT</version>
 
     <name>jQAssistant Dashboard Plugin</name>
     <description>Provides the jQAssistant dashboard for analyzing and visualizing software artifacts' data.</description>
@@ -32,7 +32,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <de.kontext-e.jqassistant.version>1.6.1</de.kontext-e.jqassistant.version>
+        <de.kontext-e.jqassistant.version>1.7.0</de.kontext-e.jqassistant.version>
     </properties>
 
     <dependencies>
