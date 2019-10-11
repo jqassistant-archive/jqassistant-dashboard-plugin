@@ -26,6 +26,9 @@
             ORDER BY
               NumberOfDuplicates desc
         ]]></cypher>
+        <verify>
+            <rowCount min="0"/>
+        </verify>
     </concept>
 
     <concept id="jqassistant-dashboard:GitDuplicateAuthorsByEmail">
@@ -50,6 +53,9 @@
             ORDER BY
               NumberOfDuplicates desc
         ]]></cypher>
+        <verify>
+            <rowCount min="0"/>
+        </verify>
     </concept>
 
     <concept id="jqassistant-dashboard:GitMergeCommit">
@@ -67,7 +73,7 @@
               count(c) as MergeCommits
         ]]></cypher>
         <verify>
-            <aggregation />
+            <aggregation min="0" />
         </verify>
     </concept>
 
