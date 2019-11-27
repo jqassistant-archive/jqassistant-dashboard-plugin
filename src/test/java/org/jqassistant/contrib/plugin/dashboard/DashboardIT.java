@@ -1,13 +1,10 @@
 package org.jqassistant.contrib.plugin.dashboard;
 
-import com.buschmais.jqassistant.core.analysis.api.Result;
-import com.buschmais.jqassistant.core.analysis.api.rule.Concept;
-import com.buschmais.jqassistant.core.analysis.api.rule.RuleException;
-import com.buschmais.jqassistant.plugin.common.api.model.ArtifactFileDescriptor;
+import com.buschmais.jqassistant.core.report.api.model.Result;
+import com.buschmais.jqassistant.core.rule.api.model.Concept;
+import com.buschmais.jqassistant.core.rule.api.model.RuleException;
 import com.buschmais.jqassistant.plugin.java.api.model.ClassFileDescriptor;
-import com.buschmais.jqassistant.plugin.java.api.model.ClassTypeDescriptor;
 import com.buschmais.jqassistant.plugin.java.api.model.PackageDescriptor;
-import com.buschmais.jqassistant.plugin.java.api.model.TypeDescriptor;
 import com.buschmais.jqassistant.plugin.java.test.AbstractJavaPluginIT;
 import de.kontext_e.jqassistant.plugin.git.store.descriptor.GitAuthorDescriptor;
 import de.kontext_e.jqassistant.plugin.git.store.descriptor.GitCommitDescriptor;
@@ -17,7 +14,7 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 import java.util.Map;
 
-import static com.buschmais.jqassistant.core.analysis.api.Result.Status.SUCCESS;
+import static com.buschmais.jqassistant.core.report.api.model.Result.Status.SUCCESS;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class DashboardIT extends AbstractJavaPluginIT {
