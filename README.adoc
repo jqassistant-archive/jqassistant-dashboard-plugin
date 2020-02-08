@@ -25,7 +25,7 @@ Currently the dashboard provides:
 == Prerequisites
 
 - Java 8 or higher
-- jQAssistant 1.7.0 or higher (see below)
+- jQAssistant 1.8.0 or higher (see below)
 
 [[HowTo]]
 == How To Use It
@@ -41,7 +41,7 @@ The plugin can be enabled in a Maven based project by adding it as a dependency 
         <plugin>
             <groupId>com.buschmais.jqassistant</groupId>
             <artifactId>jqassistant-maven-plugin</artifactId>
-            <version>1.7.0</version>
+            <version>1.8.0</version>
             <executions>
                 <execution>
                     <id>default-cli</id>
@@ -82,7 +82,7 @@ The plugin can be enabled in a Maven based project by adding it as a dependency 
                 <dependency>
                     <groupId>org.jqassistant.contrib.plugin</groupId>
                     <artifactId>jqassistant-dashboard-plugin</artifactId>
-                    <version>1.7.1</version>
+                    <version>1.8.0</version>
                 </dependency>
             </dependencies>
         </plugin>
