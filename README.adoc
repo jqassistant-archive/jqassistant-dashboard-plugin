@@ -104,7 +104,7 @@ The plugin can be enabled in a Maven based project by adding it as a dependency 
         <plugin>
             <groupId>org.jacoco</groupId>
             <artifactId>jacoco-maven-plugin</artifactId>
-            <version>0.7.9</version>
+            <version>0.8.5</version>
             <executions>
                 <execution>
                     <id>pre-unit-test</id>
