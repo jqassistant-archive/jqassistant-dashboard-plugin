@@ -4,12 +4,12 @@
     <parent>
         <groupId>org.jqassistant.contrib.common</groupId>
         <artifactId>parent</artifactId>
-        <version>1.9.0</version>
+        <version>1.10.0</version>
     </parent>
 
     <groupId>org.jqassistant.contrib.plugin</groupId>
     <artifactId>jqassistant-dashboard-plugin</artifactId>
-    <version>1.9.0-SNAPSHOT</version>
+    <version>1.10.0-SNAPSHOT</version>
 
     <name>jQAssistant Dashboard Plugin</name>
     <description>Provides the jQAssistant dashboard for analyzing and visualizing software artifacts' data.</description>
