@@ -1,6 +1,8 @@
 :toc:
 = jQAssistant Dashboard Plugin
 
+NOTE:: This project has been archived and is no longer actively developed. Please refer to the existing releases and documentation.
+
 The project provides a http://jqassistant.org/[jQAssistant] plugin for providing a https://github.com/softvis-research/jqa-dashboard/[dashboard],
 which shows interactive graphics about different metrics of your system.
 This allows you to have a quick overview about dependencies inside your project, statistics about your contributors, potential problems in your architecture and more.
